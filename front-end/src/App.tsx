@@ -23,10 +23,13 @@ function AppContent() {
     formData.append("image", file);
 
     try {
-      const response = await fetch("http://localhost:5000/predict", {
-        method: "POST",
-        body: formData,
-      });
+      const response = await fetch(
+        "https://dental-image-classification.onrender.com/predict",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
 
       const data = await response.json();
 

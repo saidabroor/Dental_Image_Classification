@@ -6,7 +6,7 @@ import numpy as np
 import os
 
 app = Flask(__name__)
-CORS(app) 
+CORS(app, origins=["dental-image-classification.vercel.app"]) 
 
 # Loading model
 model = load_model('model/dentalclassificationmodel.keras')
