@@ -9,3 +9,4 @@ Flask
 Keras
 Pillow
 gunicorn
+flask-cors
