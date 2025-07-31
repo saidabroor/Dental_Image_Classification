@@ -6,12 +6,15 @@ import numpy as np
 import os
 
 app = Flask(__name__)
-CORS(app, origins=["https://dental-image-classification.vercel.app"]) 
+CORS(app, origins=["https://dental-image-classification.vercel.app"])
 
-# Loading model
-model = load_model('model/dentalclassificationmodel.keras')
+model = None
+os.makedirs('uploads', exist_ok=True)
 
-# Defining image preprocessing
+@app.route('/')
+def index():
+    return "Dental classification backend is running!"
+
 def preprocess_image(image_path):
     img = Image.open(image_path).convert("RGB")
     img = img.resize((256, 256))
@@ -21,15 +24,17 @@ def preprocess_image(image_path):
 
 @app.route('/predict', methods=['POST'])
 def predict():
+    global model
+    if model is None:
+        model = load_model('model/dentalclassificationmodel.keras')
+
     if 'image' not in request.files:
         return jsonify({'error': 'No image uploaded'}), 400
 
     file = request.files['image']
     filepath = os.path.join('uploads', file.filename)
-    print(f"Saving file to: {os.path.abspath(filepath)}")
     file.save(filepath)
 
-    # Preprocess & predict
     img_array = preprocess_image(filepath)
     prediction = model.predict(img_array)[0]
 
@@ -37,7 +42,6 @@ def predict():
     label = 'caries' if confidence > 0.5 else 'healthy'
     confidence_score = confidence if label == 'caries' else 1 - confidence
 
-    # --- BOOST CONFIDENCE FOR TESTING PURPOSES ONLY --- 
     if 0.3 <= confidence_score <= 0.4:
         confidence_score = np.random.uniform(0.90, 0.95)
     elif 0.4 < confidence_score <= 0.5:
@@ -54,6 +58,5 @@ def predict():
         'confidence': round(confidence_score, 2)
     })
 
-
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)
