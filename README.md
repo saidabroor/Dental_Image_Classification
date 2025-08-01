@@ -52,7 +52,12 @@ y=y_train
 )
 
 **Results**
-Accuracy: 71.8%
-Validation accuracy:
+Accuracy: 93.3%
 
 ![alt text](image-1.png)
+
+Testing korean version:
+![alt text](ToothHealth.ai_kr.gif)
+
+Testing english version:
+![alt text](ToothHealth.ai_en.gif)
